@@ -138,10 +138,10 @@ class getOverdue(Resource):
             currentDate = date.today()
             strCurrentDate = str(currentDate)
             formattedCurrentDate = time.strptime(strCurrentDate, "%Y-%m-%d")
-            if formattedDueDate < formattedCurrentDate:
+            if formattedDueDate < formattedCurrentDate and i[3] != "Finished":
                 result.append({"id": i[0], "task": i[1],
                                "due_date": i[2], "status": i[3]})
-        return []
+        return result
 
 
 @ns.route('/<int:id>')
