@@ -130,7 +130,6 @@ class getOverdue(Resource):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM todos")
         z = cur.fetchall()
-        print(z)
         result = []
 
         for i in z:
@@ -203,7 +202,6 @@ class getTodosForGivenDate(Resource):
         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM todos")
         b = cur.fetchall()
-        print("b===============================>", b)
         result = []
         for i in b:
             if i[2] == due_date and i[3] != "Finished":
