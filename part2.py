@@ -14,7 +14,7 @@ headers = True
 marks = []
 
 try:
-    with open("Marks Report.csv", 'r') as file:
+    with open("Student_marks_list (1).csv", 'r') as file:
         fileReader = csv_reader(file)
         if headers:
             columns = next(fileReader)
@@ -73,7 +73,7 @@ class Students:
     def calculateTotal(self, student_details):
         # time->O(n) | space O(1) bestcase
         for index in range(0, len(student_details)):
-            student_details[index]['total'] = self.getValue(index, 'maths', student_details)+self.getValue(index, 'biology', student_details)+self.getValue(
+            student_details[index]["total"] = self.getValue(index, 'maths', student_details)+self.getValue(index, 'biology', student_details)+self.getValue(
                 index, 'english', student_details)+self.getValue(index, 'physics', student_details)+self.getValue(index, 'chemistry', student_details)+self.getValue(index, 'hindi', student_details)
 
    # Finding best three students in the class
@@ -83,20 +83,20 @@ class Students:
         self.calculateTotal(student_details)
         largest = 0
         for i in range(1, len(student_details)):
-            if(int(student_details[largest]['total']) < int(student_details[i]['total'])):
+            if(int(student_details[largest]["total"]) < int(student_details[i]["total"])):
                 largest = i
-        student_details[largest]['total'] = -1
+        student_details[largest]["total"] = -1
 
         secondlarge = 0
         for i in range(1, len(student_details)):
-            if(int(student_details[i]['total']) != -1 and int(student_details[secondlarge]['total']) < int(student_details[i]['total'])):
+            if(int(student_details[i]["total"]) != -1 and int(student_details[secondlarge]["total"]) < int(student_details[i]["total"])):
                 secondlarge = i
 
-        student_details[secondlarge]['total'] = -1
+        student_details[secondlarge]["total"] = -1
 
         thirdlarge = 0
         for i in range(1, len(student_details)):
-            if(int(student_details[i]['total']) != -1 and int(student_details[thirdlarge]['total']) < int(student_details[i]['total'])):
+            if(int(student_details[i]["total"]) != -1 and int(student_details[thirdlarge]["total"]) < int(student_details[i]["total"])):
                 thirdlarge = i
 
         # Shows the best three students in the class
