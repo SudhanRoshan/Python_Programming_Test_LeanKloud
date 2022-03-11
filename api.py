@@ -5,6 +5,7 @@ from datetime import date
 import time
 from flask_mysqldb import MySQL
 
+# MySQL database configurations
 
 app = Flask(__name__)
 app.config["MYSQL_HOST"] = "localhost"
@@ -31,24 +32,13 @@ todo = api.model('Todo', {
     'status': fields.String(required=True, description='The status of the task'),
 })
 
+# Classes to initialize todo list and create a task
+
 
 class TodoDAO(object):
     def __init__(self):
         self.counter = 0
         self.todos = []
-
-    def get(self, id):
-        for todo in self.todos:
-            if todo['id'] == id:
-                return todo
-        api.abort(404, "Todo {} doesn't exist".format(id))
-
-    def getTodos(self, due_date):
-        result = []
-        for todo in self.todos:
-            if todo["due_date"] == due_date and todo["status"] != "Finished":
-                result.append(todo)
-        return result
 
     def create(self, data):
         todo = data
@@ -56,14 +46,7 @@ class TodoDAO(object):
         self.todos.append(todo)
         return todo
 
-    def update(self, id, data):
-        todo = self.get(id)
-        todo.update(data)
-        return todo
-
-    def delete(self, id):
-        todo = self.get(id)
-        self.todos.remove(todo)
+# Object declaration
 
 
 DAO = TodoDAO()
@@ -74,6 +57,7 @@ class TodoList(Resource):
     '''Shows a list of all todos, and lets you POST to add new tasks'''
     @ns.doc('list_todos')
     @ns.marshal_list_with(todo)
+    # To show all tasks
     def get(self):
         '''List all tasks'''
         cur = mysql.connection.cursor()
@@ -88,6 +72,7 @@ class TodoList(Resource):
     @ns.doc('create_todo')
     @ns.expect(todo)
     @ns.marshal_with(todo, code=201)
+    # To create a task
     def post(self):
         '''Create a new task'''
         cur = mysql.connection.cursor()
@@ -105,6 +90,7 @@ class getFinished(Resource):
     '''Shows a list of all todos that are finished'''
     @ns.doc('list_finished_todos')
     @ns.marshal_list_with(todo)
+    # To show finished tasks
     def get(self):
         '''List all the finished tasks'''
         cur = mysql.connection.cursor()
@@ -125,6 +111,7 @@ class getOverdue(Resource):
     '''Shows a list of all todos that are overdue'''
     @ns.doc('list_overdue_todos')
     @ns.marshal_list_with(todo)
+    # To show tasks overdue
     def get(self):
         '''List all the overdue tasks'''
         cur = mysql.connection.cursor()
@@ -151,6 +138,7 @@ class Todo(Resource):
     '''Show a single todo item and lets you delete them'''
     @ns.doc('get_todo')
     @ns.marshal_with(todo)
+    # To show task given its id
     def get(self, id):
         '''Fetch a given resource'''
         cur = mysql.connection.cursor()
@@ -165,6 +153,7 @@ class Todo(Resource):
 
     @ns.doc('delete_todo')
     @ns.response(204, 'Todo deleted')
+    # To delete a task given its id
     def delete(self, id):
         '''Delete a task given its identifier'''
         cur = mysql.connection.cursor()
@@ -176,6 +165,7 @@ class Todo(Resource):
 
     @ns.expect(todo)
     @ns.marshal_with(todo)
+    # To update the status of the task given its id
     def put(self, id):
         '''Update a task given its identifier'''
         cur = mysql.connection.cursor()
@@ -185,7 +175,7 @@ class Todo(Resource):
                         api.payload)["task"], DAO.create(api.payload)["due_date"], DAO.create(api.payload)["status"], ))
         mysql.connection.commit()
         return "UPDATED"
-        return DAO.update(id, api.payload)
+
 
 # Additional endpoint (i.e) "GET/due?due_date=yyyy-mm-dd"
 
@@ -197,6 +187,7 @@ class getTodosForGivenDate(Resource):
     '''Shows dues with given date'''
     @ns.doc('get_dues_with_given_date')
     @ns.marshal_with(todo)
+    # To show tasks due for the given date
     def get(self, due_date):
         '''Fetch dues of the day'''
         cur = mysql.connection.cursor()
