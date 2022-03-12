@@ -12,6 +12,8 @@ app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = "Roshan02"
 app.config["MYSQL_DB"] = "flaskapp"
+
+
 mysql = MySQL(app)
 
 
@@ -75,12 +77,13 @@ class TodoList(Resource):
     # To create a task
     def post(self):
         '''Create a new task'''
+        sourceDictionary = DAO.create(api.payload)
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO todos(task,due_date,status,id) VALUES(%s,%s,%s,%s)", (DAO.create(
-            api.payload)["task"], DAO.create(api.payload)["due_date"], DAO.create(api.payload)["status"], DAO.create(api.payload)["id"]))
+        cur.execute("INSERT INTO todos(task,due_date,status,id) VALUES(%s,%s,%s,%s)", (
+            sourceDictionary["task"], sourceDictionary["due_date"], sourceDictionary["status"], sourceDictionary["id"]))
         mysql.connection.commit()
         cur.close()
-        return DAO.create(api.payload), 201
+        return sourceDictionary, 201
 
 # Additional endpoint (i.e) "GET/finished"
 
@@ -168,11 +171,10 @@ class Todo(Resource):
     # To update the status of the task given its id
     def put(self, id):
         '''Update a task given its identifier'''
+        sourceDictionary = DAO.create(api.payload)
         cur = mysql.connection.cursor()
-
-        cur.execute("UPDATE todos SET task = %s, due_date = %s,status=%s WHERE id ={}".format(id),
-                    (DAO.create(
-                        api.payload)["task"], DAO.create(api.payload)["due_date"], DAO.create(api.payload)["status"], ))
+        cur.execute("UPDATE todos SET task = %s, due_date = %s,status=%s WHERE id ={}".format(
+            id), (sourceDictionary["task"], sourceDictionary["due_date"], sourceDictionary["status"]))
         mysql.connection.commit()
         return "UPDATED"
 
